@@ -1,20 +1,226 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+
+// Import Layouts
+import FrontendLayout from '@/layouts/Frontend.vue'
+import BackendLayout from '@/layouts/Backend.vue'
+
+// Import Views
+// Frontend
+import Home from '@/views/frontend/Home.vue'
+import About from '@/views/frontend/About.vue'
+import Portfolio from '@/views/frontend/Portfolio.vue'
+import Service from '@/views/frontend/Service.vue'
+import Contact from '@/views/frontend/Contact.vue'
+import Register from '@/views/frontend/Register.vue'
+import Login from '@/views/frontend/Login.vue'
+import ForgotPassword from '@/views/frontend/ForgotPassword.vue'
+import NotFound404 from '@/views/frontend/NotFound404.vue'
+
+// Backend
+import Dashbaord from '@/views/backend/Dashboard.vue'
+import Products from '@/views/backend/Products.vue'
+import Equipments from '@/views/backend/Equipments.vue'
+
+//สร้างฟังก์ชั่นเช็ค route ก่อนเรียกใช้งาน auth guard
+function authGuard(to, from, next) {
+  let isAuthenticated = false
+
+  if(localStorage.getItem('user')){
+    isAuthenticated = true  // ถ้ามี localstorge
+  }else{
+    isAuthenticated = false // ถ้าไม่มี localstorge
+  }
+
+  if(isAuthenticated){
+    next()  // อนุญาติให้เข้าสู่ route และโหลด components ที่ต้องการ
+  }else{
+    next({name: 'Login'})
+  }
+}
 
 const routes = [
+
+  /** Frontend Route */
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: Home
+      }
+    ],
+    meta: {
+      title: 'หน้าหลัก',
+      description: 'หน้าหลักระบบคงคลังสินค้า'
+    }
   },
   {
     path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'About',
+        component: About
+      }
+    ],
+    meta: {
+      title: 'เกี่ยวกับเรา',
+      description: 'รายละเอียดหน้าเกี่ยวกับเรา'
+    }
+  },
+  {
+    path: '/portfolio',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Portfolio',
+        component: Portfolio
+      }
+    ],
+    meta: {
+      title: 'ผลงานของเรา',
+      description: 'รายละเอียดหน้าผลงานของเรา'
+    }
+  },
+  {
+    path: '/service',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Service',
+        component: Service
+      }
+    ],
+    meta: {
+      title: 'บริการของเรา',
+      description: 'รายละเอียดหน้าบริการของเรา'
+    }
+  },
+  {
+    path: '/contact',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Contact',
+        component: Contact
+      }
+    ],
+    meta: {
+      title: 'ติดต่อเรา',
+      description: 'รายละเอียดหน้าติดต่อเรา'
+    }
+  },
+  {
+    path: '/register',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Register',
+        component: Register
+      }
+    ],
+    meta: {
+      title: 'สมัครสมาชิกใหม่',
+      description: 'รายละเอียดสมัครสมาชิกใหม่'
+    }
+  },
+  {
+    path: '/login',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Login',
+        component: Login
+      }
+    ],
+    meta: {
+      title: 'เข้าสู่ระบบ',
+      description: 'รายละเอียดหน้าเข้าสู่ระบบ'
+    }
+  },
+  {
+    path: '/forgotpassword',
+    component: FrontendLayout,
+    children: [
+      {
+        path: '',
+        name: 'ForgotPassword',
+        component: ForgotPassword
+      }
+    ],
+    meta: {
+      title: 'ลืมรหัสผ่าน',
+      description: 'รายละเอียดหน้าลืมรหัสผ่าน'
+    }
+  },
+
+  // Error 404 
+  {
+    path: "/:catchAll(.*)",
+    component: NotFound404,
+    meta: {
+      title: '404 ไม่พบหน้านี้',
+      description: 'รายละเอียดหน้า 404'
+    }
+  },
+
+  /** Frontend Route */
+  {
+    path: '/',
+    component: BackendLayout,
+    children: [
+      {
+        path: '',
+        name: 'Dashboard',
+        component: Dashbaord,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Dashboard'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'products',
+        name: 'Products',
+        component: Products,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Products'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'equipments',
+        name: 'Equipments',
+        component: Equipments,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Products'
+    }
   }
+
 ]
 
 const router = createRouter({
