@@ -240,7 +240,7 @@
       </button>
     </div>
 
-    <!-- ตารางแสดงสินค้า -->
+    <!-- table inventory -->
     <div class="w-full overflow-hidden rounded-lg shadow-xs">
       <div class="w-full overflow-x-auto">
         <table class="w-full whitespace-no-wrap">
@@ -378,6 +378,15 @@
             Add New
           </div>
 
+<button
+            class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg bg-bermuda-600 active:bg-bermuda-600 hover:bg-bermuda-700 focus:outline-none focus:shadow-outline-purple"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+</svg>
+            <!-- <span>Close</span> -->
+          </button>
+          
           <button
             class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-purple"
           >
@@ -421,6 +430,7 @@
 
           <div class="relative">
             <select
+            v-model="categoryInput"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
               <option>Select</option>
@@ -470,6 +480,7 @@
 
           <div class="relative">
             <select
+            v-model="statusInput"
               class="inline w-full px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
               <option>Select</option>
@@ -503,6 +514,7 @@
           </label>
           <div class="relative">
             <input
+            v-model="itLabelInput"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               autocomplete="off"
@@ -519,6 +531,7 @@
           </label>
           <div class="relative">
             <input
+            v-model="sapInput"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               autocomplete="off"
@@ -537,6 +550,7 @@
           </label>
           <div class="relative">
             <input
+            v-model="legacyCodeInput"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               autocomplete="off"
@@ -740,12 +754,13 @@
             Warranty
           </label>
           <div class="relative">
-            <input id="checkbox" type="checkbox" />
+            <input @change="checkWarrantyToggle($event)"  id="checkbox" type="checkbox" />
           </div>
         </div>
       </div>
 
       <hr />
+      <div id="warrantyForm" v-if="checkWarranty">
       <div class="flex flex-wrap">
         <div class="w-full px-3 pt-5">
           <label
@@ -783,6 +798,7 @@
           </div>
         </div>
       </div>
+</div>
 
       <hr />
       <div class="flex flex-wrap">
@@ -876,7 +892,7 @@
               </svg>
             </div>
             <button
-              @click="openModalAddSite"
+              @click="openModalAddLocation"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -902,12 +918,16 @@
 
           <div class="relative">
             <select
-              class="inline w-11/12 px-4 py-1 pr-4 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-state"
+              class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
+              <option>Select</option>
+              <option
+                v-for="department in departments"
+                :key="department.id"
+                :value="department.id"
+              >
+                {{ department.departmentName }}
+              </option>
             </select>
             <div
               class="absolute inset-y-0 right-0 flex items-center w-2/12 px-2 text-gray-700 pointer-events-none"
@@ -923,7 +943,7 @@
               </svg>
             </div>
             <button
-              @click="openModalAddSite"
+              @click="openModalAddDepartment"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
@@ -1387,6 +1407,186 @@
     </div>
   </div>
 
+  <!-- Popup Location ADD -->
+  <div
+    v-if="showAddLocationModal"
+    id="addLocationModal"
+    class="fixed top-0 left-0 flex items-center justify-center w-full h-full modal"
+  >
+    <div
+      class="absolute w-full h-full bg-gray-900 opacity-70 modal-overlay"
+    ></div>
+    <div
+      class="z-50 w-11/12 p-5 mx-auto overflow-y-auto bg-white rounded shadow-lg dark:bg-gray-800 modal-container md:max-w-md"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-center w-full h-auto">
+        <div
+          class="flex items-start justify-start w-full h-auto py-2 text-xl text-gray-700 dark:text-gray-200"
+        >
+          Add Location
+        </div>
+        <button
+          @click="closeModalAdd"
+          class="text-indigo-100 transition-colors duration-150 bg-red-500 focus:shadow-outline hover:bg-red-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="-2 -2 24 24"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- Modal Content-->
+      <div class="w-full h-auto mb-4">
+        <form
+          ref="addLocationForm"
+          @submit.prevent="submitLocationForm"
+          enctype="multipart/form-data"
+        >
+
+        <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Choose Site <font color="red">*</font></label
+          >
+
+        <select
+        v-model="site_id"
+              required="true"
+              class="inline w-full px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+            >
+              <option>Select</option>
+              <option v-for="site in sites" :key="site.id" :value="site.id">
+                {{ site.siteName }}
+              </option>
+            </select>
+            
+          <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Name <font color="red">*</font></label
+          >
+          <input
+            v-model="locationName"
+            class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text"
+            autocomplete="off"
+          />
+          <div v-if="v$.locationName.$error" class="mt-2 text-sm text-red-500">
+            {{ v$.locationName.$errors[0].$message }}
+          </div>
+
+
+          <div class="flex flex-wrap float-right">
+            <div class="px-2">
+              <button
+                type="submit"
+                class="px-4 py-2 mt-4 font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg text-md active:bg-purple-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-purple"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup Department ADD -->
+  <div
+    v-if="showAddDepartmentModal"
+    id="addDepartmentModal"
+    class="fixed top-0 left-0 flex items-center justify-center w-full h-full modal"
+  >
+    <div
+      class="absolute w-full h-full bg-gray-900 opacity-70 modal-overlay"
+    ></div>
+    <div
+      class="z-50 w-11/12 p-5 mx-auto overflow-y-auto bg-white rounded shadow-lg dark:bg-gray-800 modal-container md:max-w-md"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-center w-full h-auto">
+        <div
+          class="flex items-start justify-start w-full h-auto py-2 text-xl text-gray-700 dark:text-gray-200"
+        >
+          Add Department
+        </div>
+        <button
+          @click="closeModalAdd"
+          class="text-indigo-100 transition-colors duration-150 bg-red-500 focus:shadow-outline hover:bg-red-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="-2 -2 24 24"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- Modal Content-->
+      <div class="w-full h-auto mb-4">
+        <form
+          ref="addDepartmentForm"
+          @submit.prevent="submitDepartmentForm"
+          enctype="multipart/form-data"
+        >
+          
+          <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Name <font color="red">*</font></label
+          >
+          <input
+            v-model="departmentName"
+            class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+            type="text"
+            autocomplete="off"
+          />
+          <div v-if="v$.departmentName.$error" class="mt-2 text-sm text-red-500">
+            {{ v$.departmentName.$errors[0].$message }}
+          </div>
+
+          <label
+            class="block my-3 text-xs text-gray-700 dark:text-white"
+            for="address"
+            >Desciption</label
+          >
+          <textarea
+            v-model="departmentDescription"
+            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow"
+            rows="3"
+          ></textarea>
+
+
+          <div class="flex flex-wrap float-right">
+            <div class="px-2">
+              <button
+                type="submit"
+                class="px-4 py-2 mt-4 font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg text-md active:bg-purple-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-purple"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -1406,23 +1606,25 @@ export default {
     return {
       // ตัวแปรเรียกใช้งาน Validateion
       v$: useVuelidate(),
-      /** ตัวแปรสำหรับเก็บข้อมูลสินค้าที่อ่านจาก API */
+
       categorys: [],
       vendors: [],
       brands: [],
       sites: [],
       locations: [],
-      currentPage: 0,
-      perPage: 0,
-      total: 0,
+      departments: [],
 
       showList: false,
       showAdd: true,
+
+      checkWarranty: false,
       // เปิด popup แสดงหน้าเพิ่มสินค้า
       showAddCategoryModal: false,
       showAddVendorModal: false,
       showAddSiteModal: false,
       showAddBrandModal: false,
+      showAddLocationModal: false,
+      showAddDepartmentModal: false,
 
 
 
@@ -1448,6 +1650,14 @@ export default {
       latitude:"",
       longtitude:"",
       siteDescription: "",
+
+//add form location
+site_id:"",
+      locationName: "",
+
+         //add form department
+      departmentName: "",
+      departmentDescription: "",
 
       slug: "",
       price: "",
@@ -1496,6 +1706,11 @@ export default {
       this.locations = response.data;
       console.log(this.locations);
     },
+    async getDepartments() {
+      let response = await http.get(`departments`);
+      this.departments = response.data;
+      console.log(this.departments);
+    },
 
     /***********************************************************************
      * ส่วนของการอ่านข้อมูลจาก API และแสดงผลในตาราง
@@ -1539,6 +1754,14 @@ export default {
       // this.showList = false;
       // this.showAdd = true;
     },
+    checkWarrantyToggle(event){
+      if (event.target.checked) {
+       this.checkWarranty = true;
+    }else{
+      this.checkWarranty = false;
+    }
+
+    },
     //ส่วนเพิ่มสินค้าใหม่
     //เปิดปิด popup
     openModalAddCategory() {
@@ -1561,12 +1784,23 @@ export default {
       // this.showList = false;
       // this.showAdd = true;
     },
+    openModalAddLocation() {
+      this.showAddLocationModal = true;
+      // this.showList = false;
+      // this.showAdd = true;
+    },
+    openModalAddDepartment() {
+      this.showAddDepartmentModal = true;
+      // this.showList = false;
+      // this.showAdd = true;
+    },
 
     closeModalAdd() {
       this.showAddCategoryModal = false;
       this.showAddVendorModal = false;
       this.showAddBrandModal = false;
       this.showAddSiteModal = false;
+      this.showAddLocationModal = false;
       this.onResetForm();
     },
 
@@ -1853,6 +2087,120 @@ if (this.$refs.addBrandForm) {
       }
     },
 
+    submitLocationForm() {
+
+      this.v$.$validate();
+      if (!this.v$.locationName.$invalid) {
+        let data = new FormData();
+        data.append("site_id", this.site_id);
+        data.append("locationName", this.locationName);
+
+        //to api
+        http
+          .post("add-location", data)
+          .then(() => {
+            //reset form
+            this.$refs.addLocationForm.reset();
+            this.site_id = "";
+            this.locationName = "";
+            this.showAddLocationModal = false;
+
+            // reload
+            this.getLocations();
+
+            const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+
+            Toast.fire({
+              icon: "success",
+              title: "Add Successfully",
+            }).then(() => {
+              this.showAddModal = false;
+            });
+          })
+          .catch((error) => {
+            const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+            });
+
+            Toast.fire({
+              icon: "error",
+              title: error.response.data.message,
+            });
+          });
+      }
+    },
+
+    submitDepartmentForm() {
+
+      this.v$.$validate();
+      if (!this.v$.departmentName.$invalid) {
+        let data = new FormData();
+        data.append("departmentName", this.departmentName);
+        data.append("departmentDescription", this.departmentDescription);
+
+        //to api
+        http
+          .post("add-department", data)
+          .then(() => {
+            //reset form
+            this.$refs.addDepartmentForm.reset();
+            this.departmentName = "";
+            this.departmentDescription = "";
+            this.showAddDepartmentModal = false;
+
+            // reload
+            this.getDepartments();
+
+            const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+
+            Toast.fire({
+              icon: "success",
+              title: "Add Successfully",
+            }).then(() => {
+              this.showAddModal = false;
+            });
+          })
+          .catch((error) => {
+            const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+            });
+
+            Toast.fire({
+              icon: "error",
+              title: error.response.data.message,
+            });
+          });
+      }
+    },
+
     // ส่วนแก้ไขสินค้า
     //เปิด popup แก้ไขสินค้า
     openModalEditProduct(id) {
@@ -2005,6 +2353,12 @@ if (this.$refs.addBrandForm) {
       siteName: {
         required: helpers.withMessage("Please input name", required),
       },
+      locationName: {
+        required: helpers.withMessage("Please input name", required),
+      },
+      departmentName: {
+        required: helpers.withMessage("Please input name", required),
+      },
       
     };
   },
@@ -2044,6 +2398,7 @@ if (this.$refs.addBrandForm) {
     this.getVendors();
     this.getBrands();
     this.getSites();
+    this.getLocations();
   },
 };
 </script>
