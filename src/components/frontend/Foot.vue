@@ -10,9 +10,9 @@
             semper.
           </p>
           <div class="mb-4">
-            <a href="#" class="hover:text-indigo-200">+1 234 567-890</a>
+            <a href="#" class="hover:text-indigo-200">026662222</a>
             <br />
-            <a href="#" class="hover:text-indigo-200">hello@demo.com</a>
+            <a href="#" class="hover:text-indigo-200">it@interlinktelecom.co.th</a>
           </div>
           <div>
             <a href="#" class="mr-2 text-xl hover:text-indigo-200"
@@ -92,7 +92,7 @@
       </div>
       <div class="p-4 text-center">
         <hr class="mb-4 opacity-25" />
-        <p class="text-sm">Copyright © 2020 Demo Inc.</p>
+        <p class="text-sm">Copyright © 2022 Interlink Telecom Co., Ltd.</p>
       </div>
     </div>
   </footer>

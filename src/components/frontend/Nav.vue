@@ -3,7 +3,7 @@
   <header class="fixed w-full py-4 bg-white shadow-md">
     <nav class="container flex flex-wrap items-center px-4 mx-auto">
       <a href="#">
-        <img src="@/assets/img/logo-main.png" alt="logo" class="w-40" />
+        <img src="@/assets/img/top_ITEL.jpg" alt="logo" class="w-40" />
       </a>
       <button
         @click="menuOpen = true"
