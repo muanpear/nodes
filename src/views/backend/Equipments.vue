@@ -220,7 +220,7 @@
 
     <div class="flex items-center justify-between my-8">
       <button
-        @click="openModalAddProduct"
+        @click="openModalAddAsset"
         class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-500 border border-transparent rounded-lg active:bg-purple-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-purple"
       >
         <svg
@@ -249,9 +249,10 @@
               class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
             >
               <th class="px-4 py-3">ID</th>
-              <th class="px-4 py-3">Product</th>
-              <th class="px-4 py-3">Price</th>
-              <th class="px-4 py-3">By</th>
+              <th class="px-4 py-3">Status</th>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">S/N</th>
+              <th class="px-4 py-3">Category</th>
               <th class="px-4 py-3">Manage</th>
             </tr>
           </thead>
@@ -259,11 +260,12 @@
             class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
           >
             <tr
-              v-for="product in products.data"
-              :key="product.id"
+              v-for="(asset, assetRow) in assets.data"
+              :key="asset.id"
               class="text-gray-700 dark:text-gray-400 hover:bg-blue-100"
             >
-              <td class="px-4 py-3 text-sm">{{ product.id }}</td>
+              <td class="px-4 py-3 text-sm">{{ assetRow + 1 }}</td>
+              <td class="px-4 py-3 text-sm">{{ asset.statusAsset }}</td>
               <td class="px-4 py-3">
                 <div class="flex items-center text-sm">
                   <div
@@ -271,7 +273,7 @@
                   >
                     <img
                       class="object-cover w-full h-full rounded-full"
-                      :src="product.image"
+                      :src="asset.photo"
                       alt=""
                       loading="lazy"
                     />
@@ -281,24 +283,32 @@
                     ></div>
                   </div>
                   <div>
-                    <p class="font-semibold">{{ product.name }}</p>
+                    <router-link :to="'/shows/' + asset.id">
+                      <p class="font-semibold">
+                        {{ asset.tagIt }}
+                      </p></router-link
+                    >
+                    
                     <p class="text-xs text-gray-600 dark:text-gray-400">
-                      Created {{ format_date(product.created_at) }}
+                      Created {{ format_date(asset.created_at) }}
                     </p>
                   </div>
                 </div>
               </td>
               <td class="px-4 py-3 text-sm">
-                {{ formatPrice(product.price) }}
+                <p class="text-xs text-gray-600 dark:text-gray-400">
+                  {{ asset.serialNumber }}
+                </p>
               </td>
               <td class="px-4 py-3 text-sm">
-                <div class="flex items-center text-sm">
+                <p class="font-semibold">{{ asset.categorys }}</p>
+                <!-- <div class="flex items-center text-sm">
                   <div
                     class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
                   >
                     <img
                       class="object-cover w-full h-full rounded-full"
-                      :src="product.users.avatar"
+                    
                       alt=""
                       loading="lazy"
                     />
@@ -308,16 +318,16 @@
                     ></div>
                   </div>
                   <div>
-                    <p class="font-semibold">{{ product.users.fullname }}</p>
+                    <p class="font-semibold"></p>
                     <p class="text-xs text-gray-600 dark:text-gray-400">
-                      Updated {{ format_date(product.updated_at) }}
+                      Updated 
                     </p>
                   </div>
-                </div>
+                </div> -->
               </td>
               <td class="px-4 py-3 text-sm">
+                <router-link :to="'/edit/' + asset.id">
                 <button
-                  @click="openModalEditProduct(product.id)"
                   class="px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-purple-600 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-purple"
                 >
                   <svg
@@ -334,8 +344,10 @@
                     />
                   </svg>
                 </button>
+                </router-link>
+
                 <button
-                  @click="onClickDelete(product.id)"
+                  @click="onClickDelete(asset.id)"
                   class="px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-purple"
                 >
                   <svg
@@ -369,7 +381,11 @@
   </div>
 
   <div v-if="showAdd">
-    <form onsubmit="return false">
+    <form
+      ref="addAssetForm"
+      @submit.prevent="submitAssetForm"
+      enctype="multipart/form-data"
+    >
       <div class="mt-6 mb-6">
         <div class="flex items-center justify-center w-full h-auto">
           <div
@@ -378,16 +394,29 @@
             Add New
           </div>
 
-<button
-            class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 border border-transparent rounded-lg bg-bermuda-600 active:bg-bermuda-600 hover:bg-bermuda-700 focus:outline-none focus:shadow-outline-purple"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-</svg>
-            <!-- <span>Close</span> -->
-          </button>
-          
           <button
+            type="submit"
+            class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-purple"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
+
+          <button
+            @click="closeModalAddAsset"
+            type="button"
             class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-purple"
           >
             <svg
@@ -430,10 +459,10 @@
 
           <div class="relative">
             <select
-            v-model="categoryInput"
+              v-model="category_id"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
+              <option value="null">Select</option>
               <option
                 v-for="category in categorys"
                 :key="category.id"
@@ -442,6 +471,7 @@
                 {{ category.categoryName }}
               </option>
             </select>
+
             <div
               class="absolute inset-y-0 right-0 flex items-center w-2/12 px-2 text-gray-700 pointer-events-none"
             >
@@ -456,6 +486,7 @@
               </svg>
             </div>
             <button
+              type="button"
               @click="openModalAddCategory"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
@@ -467,6 +498,10 @@
                 ></path>
               </svg>
             </button>
+          </div>
+
+          <div v-if="v$.category_id.$error" class="mt-2 text-sm text-red-500">
+            {{ v$.category_id.$errors[0].$message }}
           </div>
         </div>
 
@@ -480,13 +515,18 @@
 
           <div class="relative">
             <select
-            v-model="statusInput"
+              v-model="statusAsset"
               class="inline w-full px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
-              <option selected>Yes</option>
-              <option>No</option>
+              <option value="null">Select</option>
+              <option value="N" selected>N (New เครื่องใหม่)</option>
+              <option value="U">U (Use มีคนใช้งาน)</option>
+              <option value="B">B (Borrow ยืมใช้ชั่วคราว)</option>
+              <option value="R">R (Return กลับคืน IT)</option>
+              <option value="D">D (Defective ไม่สมบูรณ์)</option>
+              <option value="W">W (WriteOff ทิ้งทำลาย)</option>
             </select>
+
             <div
               class="absolute inset-y-0 right-0 flex items-center w-1/12 px-2 text-gray-700 pointer-events-none"
             >
@@ -501,6 +541,9 @@
               </svg>
             </div>
           </div>
+          <div v-if="v$.statusAsset.$error" class="mt-2 text-sm text-red-500">
+            {{ v$.statusAsset.$errors[0].$message }}
+          </div>
         </div>
       </div>
 
@@ -514,11 +557,14 @@
           </label>
           <div class="relative">
             <input
-            v-model="itLabelInput"
+              v-model="tagIt"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               autocomplete="off"
             />
+            <div v-if="v$.tagIt.$error" class="mt-2 text-sm text-red-500">
+              {{ v$.tagIt.$errors[0].$message }}
+            </div>
           </div>
         </div>
 
@@ -531,7 +577,7 @@
           </label>
           <div class="relative">
             <input
-            v-model="sapInput"
+              v-model="tagSap"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               autocomplete="off"
@@ -550,7 +596,7 @@
           </label>
           <div class="relative">
             <input
-            v-model="legacyCodeInput"
+              v-model="tagOld"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               type="text"
               autocomplete="off"
@@ -579,10 +625,15 @@
 
           <div class="relative">
             <select
+              v-model="vender_id"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
-              <option v-for="vendor in vendors" :key="vendor.id">
+              <option value="">Select</option>
+              <option
+                v-for="vendor in vendors"
+                :key="vendor.id"
+                :value="vendor.id"
+              >
                 {{ vendor.vendorName }}
               </option>
             </select>
@@ -600,6 +651,7 @@
               </svg>
             </div>
             <button
+              type="button"
               @click="openModalAddVendor"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
@@ -622,12 +674,12 @@
             Purchase Date
           </label>
           <div class="relative">
-            <!-- <input
+            <input
+              v-model="purchaseDate"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-last-name"
-              type="text"
-            /> -->
-            <datepicker format="dd/MM/yyyy"></datepicker>
+              type="date"
+            />
+            <!-- <datepicker type="date" valueType="format" :format="'dd/MM/yyyy'" :value="purchaseDate"></datepicker> -->
           </div>
         </div>
       </div>
@@ -643,10 +695,11 @@
 
           <div class="relative">
             <select
+              v-model="brand_id"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
-              <option v-for="brand in brands" :key="brand.id">
+              <option value="">Select</option>
+              <option v-for="brand in brands" :key="brand.id" :value="brand.id">
                 {{ brand.brandName }}
               </option>
             </select>
@@ -664,6 +717,7 @@
               </svg>
             </div>
             <button
+              type="button"
               @click="openModalAddBrand"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
@@ -687,8 +741,8 @@
           </label>
           <div class="relative">
             <input
+              v-model="model"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-last-name"
               type="text"
               autocomplete="off"
             />
@@ -706,6 +760,7 @@
           </label>
           <div class="relative">
             <input
+              v-model="cost"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-last-name"
               type="number"
@@ -723,9 +778,11 @@
           </label>
           <div class="relative">
             <input
+              v-model="serialNumber"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-last-name"
               type="text"
+              autocomplete="off"
             />
           </div>
         </div>
@@ -741,6 +798,7 @@
           </label>
           <div class="relative">
             <textarea
+              v-model="specification"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-last-name"
             />
@@ -754,51 +812,60 @@
             Warranty
           </label>
           <div class="relative">
-            <input @change="checkWarrantyToggle($event)"  id="checkbox" type="checkbox" />
+            <input
+              @change="checkWarrantyToggle($event)"
+              id="checkbox"
+              type="checkbox"
+            />
           </div>
         </div>
       </div>
 
       <hr />
       <div id="warrantyForm" v-if="checkWarranty">
-      <div class="flex flex-wrap">
-        <div class="w-full px-3 pt-5">
-          <label
-            class="block mb-2 text-lg font-bold tracking-wide text-gray-700 dark:text-white"
-          >
-            Warranty
-          </label>
+        <div class="flex flex-wrap">
+          <div class="w-full px-3 pt-5">
+            <label
+              class="block mb-2 text-lg font-bold tracking-wide text-gray-700 dark:text-white"
+            >
+              Warranty
+            </label>
+          </div>
         </div>
-      </div>
 
-      <div class="flex flex-wrap">
-        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Description
-          </label>
-          <div class="relative">
-            <textarea
-              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-last-name"
-            />
+        <div class="flex flex-wrap">
+          <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+            <label
+              class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+              for="grid-state"
+            >
+              Description
+            </label>
+            <div class="relative">
+              <textarea
+                v-model="warrantyDesciption"
+                class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                id="grid-last-name"
+              />
+            </div>
           </div>
-        </div>
-        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Expire Date
-          </label>
-          <div class="relative">
-            <datepicker format="dd/MM/yyyy"></datepicker>
+          <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+            <label
+              class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+              for="grid-state"
+            >
+              Expire Date
+            </label>
+            <div class="relative">
+              <input
+                v-model="warrantyExpire"
+                class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                type="date"
+              />
+            </div>
           </div>
         </div>
       </div>
-</div>
 
       <hr />
       <div class="flex flex-wrap">
@@ -821,10 +888,11 @@
 
           <div class="relative">
             <select
+              v-model="site_id"
               v-on:change="listLocations($event.target.value)"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
+              <option value="">Select</option>
               <option v-for="site in sites" :key="site.id" :value="site.id">
                 {{ site.siteName }}
               </option>
@@ -843,6 +911,7 @@
               </svg>
             </div>
             <button
+              type="button"
               @click="openModalAddSite"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
@@ -867,9 +936,10 @@
 
           <div class="relative">
             <select
+              v-model="location_id"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
+              <option value="">Select</option>
               <option
                 v-for="location in locations"
                 :key="location.id"
@@ -892,6 +962,7 @@
               </svg>
             </div>
             <button
+              type="button"
               @click="openModalAddLocation"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
@@ -918,9 +989,10 @@
 
           <div class="relative">
             <select
+              v-model="department_id"
               class="inline w-11/12 px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
             >
-              <option>Select</option>
+              <option value="">Select</option>
               <option
                 v-for="department in departments"
                 :key="department.id"
@@ -943,6 +1015,7 @@
               </svg>
             </div>
             <button
+              type="button"
               @click="openModalAddDepartment"
               class="float-right w-4 h-4 m-2 text-indigo-100 transition-colors duration-150 bg-yellow-500 rounded-lg focus:shadow-outline hover:bg-yellow-600"
             >
@@ -1344,42 +1417,42 @@
             rows="3"
             autocomplete="off"
           ></textarea>
-  
-          <div class="flex flex-wrap">
-        <div class="w-full px-1 pb-2 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Latitude
-          </label>
-          <div class="relative">
-            <input
-              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              type="text"
-              autocomplete="off"
-               v-model="latitude"
-            />
-          </div>
-        </div>
 
-        <div class="w-full px-1 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Longtitude
-          </label>
-          <div class="relative">
-            <input
-              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              type="text"
-              autocomplete="off"
-               v-model="longtitude"
-            />
+          <div class="flex flex-wrap">
+            <div class="w-full px-1 pb-2 mb-6 md:w-1/2 md:mb-0">
+              <label
+                class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+                for="grid-state"
+              >
+                Latitude
+              </label>
+              <div class="relative">
+                <input
+                  class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                  type="text"
+                  autocomplete="off"
+                  v-model="latitude"
+                />
+              </div>
+            </div>
+
+            <div class="w-full px-1 mb-6 md:w-1/2 md:mb-0">
+              <label
+                class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+                for="grid-state"
+              >
+                Longtitude
+              </label>
+              <div class="relative">
+                <input
+                  class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                  type="text"
+                  autocomplete="off"
+                  v-model="longtitude"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
           <label
             class="block my-3 text-xs text-gray-700 dark:text-white"
@@ -1451,24 +1524,23 @@
           @submit.prevent="submitLocationForm"
           enctype="multipart/form-data"
         >
-
-        <label
+          <label
             class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
             for="name"
             >Choose Site <font color="red">*</font></label
           >
 
-        <select
-        v-model="site_id"
-              required="true"
-              class="inline w-full px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-            >
-              <option>Select</option>
-              <option v-for="site in sites" :key="site.id" :value="site.id">
-                {{ site.siteName }}
-              </option>
-            </select>
-            
+          <select
+            v-model="new_site_id"
+            required="true"
+            class="inline w-full px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+          >
+            <option>Select</option>
+            <option v-for="site in sites" :key="site.id" :value="site.id">
+              {{ site.siteName }}
+            </option>
+          </select>
+
           <label
             class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
             for="name"
@@ -1483,7 +1555,6 @@
           <div v-if="v$.locationName.$error" class="mt-2 text-sm text-red-500">
             {{ v$.locationName.$errors[0].$message }}
           </div>
-
 
           <div class="flex flex-wrap float-right">
             <div class="px-2">
@@ -1544,7 +1615,6 @@
           @submit.prevent="submitDepartmentForm"
           enctype="multipart/form-data"
         >
-          
           <label
             class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
             for="name"
@@ -1556,7 +1626,10 @@
             type="text"
             autocomplete="off"
           />
-          <div v-if="v$.departmentName.$error" class="mt-2 text-sm text-red-500">
+          <div
+            v-if="v$.departmentName.$error"
+            class="mt-2 text-sm text-red-500"
+          >
             {{ v$.departmentName.$errors[0].$message }}
           </div>
 
@@ -1570,7 +1643,6 @@
             class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow"
             rows="3"
           ></textarea>
-
 
           <div class="flex flex-wrap float-right">
             <div class="px-2">
@@ -1586,7 +1658,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -1596,17 +1667,39 @@ import VueTailwindPagination from "@ocrv/vue-tailwind-pagination";
 import useVuelidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import moment from "moment";
-import Datepicker from "vuejs3-datepicker";
+
 export default {
   components: {
     VueTailwindPagination,
-    Datepicker,
   },
   data() {
     return {
       // ตัวแปรเรียกใช้งาน Validateion
       v$: useVuelidate(),
 
+      currentPage: 0,
+      perPage: 0,
+      total: 0,
+
+      category_id: null,
+      statusAsset: null,
+      tagIt: "",
+      tagOld: "",
+      tagSap: "",
+      vender_id: "",
+      purchaseDate: "",
+      brand_id: "",
+      model: "",
+      cost: "",
+      serialNumber: "",
+      specification: "",
+      site_id: "",
+      location_id: "",
+      department_id: "",
+      warrantyDesciption: "",
+      warrantyExpire: "",
+
+      assets: [],
       categorys: [],
       vendors: [],
       brands: [],
@@ -1614,8 +1707,8 @@ export default {
       locations: [],
       departments: [],
 
-      showList: false,
-      showAdd: true,
+      showList: true,
+      showAdd: false,
 
       checkWarranty: false,
       // เปิด popup แสดงหน้าเพิ่มสินค้า
@@ -1625,8 +1718,6 @@ export default {
       showAddBrandModal: false,
       showAddLocationModal: false,
       showAddDepartmentModal: false,
-
-
 
       showEditModal: false,
 
@@ -1646,16 +1737,16 @@ export default {
 
       //add form site
       siteName: "",
-      address:"",
-      latitude:"",
-      longtitude:"",
+      address: "",
+      latitude: "",
+      longtitude: "",
       siteDescription: "",
 
-//add form location
-site_id:"",
+      //add form location
+      new_site_id: "",
       locationName: "",
 
-         //add form department
+      //add form department
       departmentName: "",
       departmentDescription: "",
 
@@ -1681,6 +1772,16 @@ site_id:"",
     };
   },
   methods: {
+    async getAssets(pageNumber) {
+      let response = await http.get(`assets?page=${pageNumber}`);
+      let responseAsset = response.data;
+    
+      this.assets = responseAsset;
+       this.currentPage = responseAsset.current_page;
+      this.perPage = responseAsset.per_page;
+      this.total = responseAsset.total;
+      console.log(this.assets);
+    },
     async getCategorys() {
       let response = await http.get(`categorys`);
       this.categorys = response.data;
@@ -1704,12 +1805,12 @@ site_id:"",
     async getLocations(id) {
       let response = await http.get(`locations/` + id);
       this.locations = response.data;
-      console.log(this.locations);
+      // console.log(this.locations);
     },
     async getDepartments() {
       let response = await http.get(`departments`);
       this.departments = response.data;
-      console.log(this.departments);
+      // console.log(this.departments);
     },
 
     /***********************************************************************
@@ -1735,17 +1836,17 @@ site_id:"",
     //   this.perPage = responseProduct.per_page;
     //   this.total = responseProduct.total;
     // },
-    // // สร้างฟังก์ชันสำหรับการคลิ๊กเปลี่ยนหน้า
-    // onPageClick(event) {
-    //   this.currentPage = event;
-    //   //เช็คว่ามีการค้นหาสินค้าอยู่หรือไม่
-    //   if (this.keyword == "") {
-    //     // ไม่ได้ค้นหา
-    //     this.getProducts(this.currentPage);
-    //   } else {
-    //     this.getProductsSearch(this.currentPage);
-    //   }
-    // },
+    // สร้างฟังก์ชันสำหรับการคลิ๊กเปลี่ยนหน้า
+    onPageClick(event) {
+      this.currentPage = event;
+      //เช็คว่ามีการค้นหาสินค้าอยู่หรือไม่
+      if (this.keyword == "") {
+        // ไม่ได้ค้นหา
+        this.getAssets(this.currentPage);
+      } else {
+        // this.getProductsSearch(this.currentPage);
+      }
+    },
 
     listLocations(id) {
       console.log(id);
@@ -1754,16 +1855,23 @@ site_id:"",
       // this.showList = false;
       // this.showAdd = true;
     },
-    checkWarrantyToggle(event){
+    checkWarrantyToggle(event) {
       if (event.target.checked) {
-       this.checkWarranty = true;
-    }else{
-      this.checkWarranty = false;
-    }
-
+        this.checkWarranty = true;
+      } else {
+        this.checkWarranty = false;
+      }
     },
     //ส่วนเพิ่มสินค้าใหม่
     //เปิดปิด popup
+    openModalAddAsset() {
+      this.showList = false;
+      this.showAdd = true;
+    },
+    closeModalAddAsset() {
+      this.showList = true;
+      this.showAdd = false;
+    },
     openModalAddCategory() {
       this.showAddCategoryModal = true;
       // this.showList = false;
@@ -1801,6 +1909,7 @@ site_id:"",
       this.showAddBrandModal = false;
       this.showAddSiteModal = false;
       this.showAddLocationModal = false;
+      this.showAddDepartmentModal = false;
       this.onResetForm();
     },
 
@@ -1829,28 +1938,24 @@ site_id:"",
       if (this.$refs.addCategoryForm) {
         this.$refs.addCategoryForm.reset();
         this.categoryName = "";
-      this.categoryCode = "";
-      this.categoryDescription = "";
-      this.showAddCategoryModal = false;
+        this.categoryCode = "";
+        this.categoryDescription = "";
+        this.showAddCategoryModal = false;
       }
-      
-if (this.$refs.addVendorForm) {
-  this.$refs.addVendorForm.reset();
-      this.vendorName = "";
-      this.vendorDescription = "";
-      this.showAddVendorModal = false;
-}
 
-if (this.$refs.addBrandForm) {
-  this.$refs.addBrandForm.reset();
-      this.brandName = "";
-      this.brandDescription = "";
-      this.showAddBrandModal = false;
-}
-      
+      if (this.$refs.addVendorForm) {
+        this.$refs.addVendorForm.reset();
+        this.vendorName = "";
+        this.vendorDescription = "";
+        this.showAddVendorModal = false;
+      }
 
-
-   
+      if (this.$refs.addBrandForm) {
+        this.$refs.addBrandForm.reset();
+        this.brandName = "";
+        this.brandDescription = "";
+        this.showAddBrandModal = false;
+      }
     },
 
     // Add form
@@ -2025,7 +2130,6 @@ if (this.$refs.addBrandForm) {
     },
 
     submitSiteForm() {
-
       this.v$.$validate();
       if (!this.v$.siteName.$invalid) {
         let data = new FormData();
@@ -2043,7 +2147,7 @@ if (this.$refs.addBrandForm) {
             this.$refs.addsiteForm.reset();
             this.siteName = "";
             this.address = "";
-            this.latitude= "";
+            this.latitude = "";
             this.longtitude = "";
             this.siteDescription = "";
             this.showAddSiteModal = false;
@@ -2088,11 +2192,10 @@ if (this.$refs.addBrandForm) {
     },
 
     submitLocationForm() {
-
       this.v$.$validate();
       if (!this.v$.locationName.$invalid) {
         let data = new FormData();
-        data.append("site_id", this.site_id);
+        data.append("site_id", this.new_site_id);
         data.append("locationName", this.locationName);
 
         //to api
@@ -2101,7 +2204,7 @@ if (this.$refs.addBrandForm) {
           .then(() => {
             //reset form
             this.$refs.addLocationForm.reset();
-            this.site_id = "";
+            this.new_site_id = "";
             this.locationName = "";
             this.showAddLocationModal = false;
 
@@ -2145,7 +2248,6 @@ if (this.$refs.addBrandForm) {
     },
 
     submitDepartmentForm() {
-
       this.v$.$validate();
       if (!this.v$.departmentName.$invalid) {
         let data = new FormData();
@@ -2200,9 +2302,84 @@ if (this.$refs.addBrandForm) {
           });
       }
     },
+    submitAssetForm() {
+      this.v$.$validate();
+      if (
+        !this.v$.category_id.$invalid &&
+        !this.v$.statusAsset.$invalid &&
+        !this.v$.tagIt.$invalid
+      ) {
+        let data = new FormData();
+        data.append("category_id", this.category_id);
+        data.append("statusAsset", this.statusAsset);
+        data.append("tagIt", this.tagIt);
+        data.append("tagOld", this.tagOld);
+        data.append("tagSap", this.tagSap);
+        data.append("vender_id", this.vender_id);
+        data.append("purchaseDate", this.purchaseDate);
+        data.append("brand_id", this.brand_id);
+        data.append("model", this.model);
+        data.append("cost", this.cost);
+        data.append("serialNumber", this.serialNumber);
+        data.append("specification", this.specification);
+        data.append("site_id", this.site_id);
+        data.append("location_id", this.location_id);
+        data.append("department_id", this.department_id);
+        data.append("photo", this.file);
+        data.append("checkWarranty", this.checkWarranty);
+        data.append("warrantyDescription", this.warrantyDescription);
+        data.append("warrantyExpire", this.warrantyExpire);
+        console.log(this.checkWarranty);
+        console.log(this.warrantyExpire);
+        //  to api
+        http
+          .post("add-asset", data)
+          .then(() => {
+            //reset form
+            this.$refs.addAssetForm.reset();
+            // this.vendorName = "";
+            // this.vendorDescription = "";
+            // this.showAddVendorModal = false;
 
-    // ส่วนแก้ไขสินค้า
-    //เปิด popup แก้ไขสินค้า
+            // // reload
+            // this.getVendors();
+
+            const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", this.$swal.stopTimer);
+                toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+              },
+            });
+
+            Toast.fire({
+              icon: "success",
+              title: "Add Successfully",
+            }).then(() => {
+              this.showAddModal = false;
+            });
+          })
+          .catch((error) => {
+            const Toast = this.$swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+            });
+
+            Toast.fire({
+              icon: "error",
+              title: error.response.data.message,
+            });
+          });
+      }
+    },
+
     openModalEditProduct(id) {
       http.get(`products/${id}`).then((response) => {
         this.eid = response.data.id;
@@ -2359,7 +2536,15 @@ if (this.$refs.addBrandForm) {
       departmentName: {
         required: helpers.withMessage("Please input name", required),
       },
-      
+      category_id: {
+        required: helpers.withMessage("Please input name", required),
+      },
+      statusAsset: {
+        required: helpers.withMessage("Please input name", required),
+      },
+      tagIt: {
+        required: helpers.withMessage("Please input name", required),
+      },
     };
   },
   //   imageData() {
@@ -2393,12 +2578,14 @@ if (this.$refs.addBrandForm) {
   mounted() {
     this.currentPage = 1;
     // อ่านสินค้าจาก API
-    // this.getProducts(this.currentPage);
+    this.getAssets(this.currentPage);
+    // this.getAssets();
     this.getCategorys();
     this.getVendors();
     this.getBrands();
     this.getSites();
     this.getLocations();
+    this.getDepartments();
   },
 };
 </script>

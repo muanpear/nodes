@@ -7,7 +7,7 @@ import BackendLayout from '@/layouts/Backend.vue'
 // Import Views
 // Frontend
 import Home from '@/views/frontend/Home.vue'
-import About from '@/views/frontend/About.vue'
+import Scan from '@/views/frontend/Scan.vue'
 import Portfolio from '@/views/frontend/Portfolio.vue'
 import Service from '@/views/frontend/Service.vue'
 import Contact from '@/views/frontend/Contact.vue'
@@ -20,6 +20,8 @@ import NotFound404 from '@/views/frontend/NotFound404.vue'
 import Dashbaord from '@/views/backend/Dashboard.vue'
 import Products from '@/views/backend/Products.vue'
 import Equipments from '@/views/backend/Equipments.vue'
+import ShowAsset from '@/views/backend/asset/ShowAsset.vue'
+import EditAsset from '@/views/backend/asset/EditAsset.vue'
 
 //สร้างฟังก์ชั่นเช็ค route ก่อนเรียกใช้งาน auth guard
 function authGuard(to, from, next) {
@@ -57,19 +59,13 @@ const routes = [
     }
   },
   {
-    path: '/about',
-    component: FrontendLayout,
-    children: [
-      {
-        path: '',
-        name: 'About',
-        component: About
-      }
-    ],
-    meta: {
-      title: 'เกี่ยวกับเรา',
-      description: 'รายละเอียดหน้าเกี่ยวกับเรา'
-    }
+    path: '/scan',
+    // component: FrontendLayout,
+   
+        name: 'Scan',
+        component: Scan
+   ,
+ 
   },
   {
     path: '/portfolio',
@@ -217,7 +213,39 @@ const routes = [
       }
     ],
     meta:{
-      title: 'Products'
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'shows/:id',
+        name: 'ShowAsset',
+        component: ShowAsset,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'edit/:id',
+        name: 'EditAsset',
+        component: EditAsset,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
     }
   }
 
