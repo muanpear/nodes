@@ -22,6 +22,7 @@ import Products from '@/views/backend/Products.vue'
 import Equipments from '@/views/backend/Equipments.vue'
 import ShowAsset from '@/views/backend/asset/ShowAsset.vue'
 import EditAsset from '@/views/backend/asset/EditAsset.vue'
+import ListEmployee from '@/views/backend/employee/ListEmployee.vue'
 
 //สร้างฟังก์ชั่นเช็ค route ก่อนเรียกใช้งาน auth guard
 function authGuard(to, from, next) {
@@ -241,6 +242,22 @@ const routes = [
         path: 'edit/:id',
         name: 'EditAsset',
         component: EditAsset,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'employees',
+        name: 'ListEmployee',
+        component: ListEmployee,
         beforeEnter: authGuard
       }
     ],

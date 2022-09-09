@@ -225,12 +225,13 @@
         </div>
       </div>
       <hr />
+
       <div class="flex flex-wrap">
         <div class="w-full px-3 pt-5">
           <label
             class="block mb-2 text-lg font-bold tracking-wide text-gray-700 dark:text-white"
           >
-            Detail
+            Purcharse
           </label>
         </div>
       </div>
@@ -310,6 +311,73 @@
             class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
             for="grid-state"
           >
+            PurcharseOrderID
+          </label>
+          <div class="relative">
+            <input
+              v-model="poID"
+              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+              id="grid-last-name"
+              type="text"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
+            Receive Date
+          </label>
+          <div class="relative">
+            <input
+              v-model="receiveDate"
+              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+              type="date"
+            />
+            <!-- <datepicker type="date" valueType="format" :format="'dd/MM/yyyy'" :value="purchaseDate"></datepicker> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap">
+        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
+            Cost
+          </label>
+          <div class="relative">
+            <input
+              v-model="cost"
+              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+              type="number"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+      <hr />
+      
+      <div class="flex flex-wrap">
+        <div class="w-full px-3 pt-5">
+          <label
+            class="block mb-2 text-lg font-bold tracking-wide text-gray-700 dark:text-white"
+          >
+            Detail
+          </label>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap">
+        <div class="w-full px-3 pb-2 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
             Brand
           </label>
 
@@ -371,24 +439,6 @@
       </div>
 
       <div class="flex flex-wrap">
-        <div class="w-full px-3 pb-2 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Cost
-          </label>
-          <div class="relative">
-            <input
-              v-model="cost"
-              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-last-name"
-              type="number"
-              autocomplete="off"
-            />
-          </div>
-        </div>
-
         <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
           <label
             class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
@@ -403,6 +453,23 @@
               id="grid-last-name"
               type="text"
               autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
+            Warranty
+          </label>
+          <div class="relative">
+            <input
+            disabled
+              @change="checkWarrantyToggle($event)"
+              id="checkbox"
+              type="checkbox"
             />
           </div>
         </div>
@@ -421,23 +488,6 @@
               v-model="specification"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-last-name"
-            />
-          </div>
-        </div>
-        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Warranty
-          </label>
-          <div class="relative">
-            <input
-            disabled
-            v-model="checkWarranty"
-              @change="checkWarrantyToggle($event)"
-              id="checkbox"
-              type="checkbox"
             />
           </div>
         </div>
