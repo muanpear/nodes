@@ -142,9 +142,9 @@
               >
                 <th class="px-4 py-3">ID</th>
                 <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">EmployeeID</th>
                 <th class="px-4 py-3">Name</th>
-                <th class="px-4 py-3">S/N</th>
-                <th class="px-4 py-3">Category</th>
+                <th class="px-4 py-3">Department</th>
                 <th class="px-4 py-3">Manage</th>
               </tr>
             </thead>
@@ -152,78 +152,37 @@
               class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
             >
               <tr
-                v-for="(asset, assetRow) in assets.data"
-                :key="asset.id"
+                v-for="(employee, employeeRow) in employees.data"
+                :key="employee.id"
                 class="text-gray-700 dark:text-gray-400 hover:bg-blue-100"
               >
-                <td class="px-4 py-3 text-sm">{{ assetRow + 1 }}</td>
+                <td class="px-4 py-3 text-sm">{{ employeeRow + 1 }}</td>
                 <td class="px-4 py-3 text-sm">
                   <span
                     class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-800"
-                    >{{ asset.statusAsset }}</span
+                    >OUT</span
                   >
                 </td>
                 <td class="px-4 py-3">
                   <div class="flex items-center text-sm">
-                    <div
-                      class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
-                    >
-                      <img
-                        class="object-cover w-full h-full rounded-full"
-                        :src="asset.photo"
-                        alt=""
-                        loading="lazy"
-                      />
-                      <div
-                        class="absolute inset-0 rounded-full shadow-inner"
-                        aria-hidden="true"
-                      ></div>
-                    </div>
                     <div>
-                      <router-link :to="'/shows/' + asset.id">
                         <p class="font-semibold">
-                          {{ asset.tagIt }}
-                        </p></router-link
-                      >
-  
-                      <p class="text-xs text-gray-600 dark:text-gray-400">
-                        - Created {{ format_date(asset.created_at) }}
-                      </p>
+                          {{ employee.empID }}
+                        </p>
                     </div>
                   </div>
                 </td>
                 <td class="px-4 py-3 text-sm">
                   <p class="text-xs text-gray-600 dark:text-gray-400">
-                    {{ asset.serialNumber }}
+                    {{ employee.empFirstname }} {{ employee.empLastname }}
                   </p>
                 </td>
                 <td class="px-4 py-3 text-sm">
-                  <p class="font-semibold">{{ asset.categorys }}</p>
-                  <!-- <div class="flex items-center text-sm">
-                    <div
-                      class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
-                    >
-                      <img
-                        class="object-cover w-full h-full rounded-full"
-                      
-                        alt=""
-                        loading="lazy"
-                      />
-                      <div
-                        class="absolute inset-0 rounded-full shadow-inner"
-                        aria-hidden="true"
-                      ></div>
-                    </div>
-                    <div>
-                      <p class="font-semibold"></p>
-                      <p class="text-xs text-gray-600 dark:text-gray-400">
-                        Updated 
-                      </p>
-                    </div>
-                  </div> -->
+                  <p class="font-semibold">{{ employee.departments }}</p>
+                  
                 </td>
                 <td class="px-4 py-3 text-sm">
-                  <router-link :to="'/edit/' + asset.id">
+                  <router-link :to="'/edit/' + employee.id">
                     <button
                       class="px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-purple-600 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-purple"
                     >
@@ -244,7 +203,7 @@
                   </router-link>
   
                   <button
-                    @click="onClickDelete(asset.id)"
+                    @click="onClickDelete(employee.id)"
                     class="px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-red-700 focus:outline-none focus:shadow-outline-purple"
                   >
                     <svg
@@ -283,8 +242,7 @@
   import "@ocrv/vue-tailwind-pagination/dist/style.css";
   import VueTailwindPagination from "@ocrv/vue-tailwind-pagination";
   import useVuelidate from "@vuelidate/core";
-  import { required, helpers } from "@vuelidate/validators";
-  import moment from "moment";
+ 
   
   export default {
     components: {
@@ -299,6 +257,7 @@
         perPage: 0,
         total: 0,
   
+        employees: [],
 
   
         
@@ -307,15 +266,15 @@
       };
     },
     methods: {
-      async getAssets(pageNumber) {
-        let response = await http.get(`assets?page=${pageNumber}`);
-        let responseAsset = response.data;
+      async getEmployees(pageNumber) {
+        let response = await http.get(`employees?page=${pageNumber}`);
+        let responseEmployee = response.data;
   
-        this.assets = responseAsset;
-        this.currentPage = responseAsset.current_page;
-        this.perPage = responseAsset.per_page;
-        this.total = responseAsset.total;
-        console.log(this.assets);
+        this.employees = responseEmployee;
+        this.currentPage = responseEmployee.current_page;
+        this.perPage = responseEmployee.per_page;
+        this.total = responseEmployee.total;
+        console.log(this.employees);
       },
   
       /***********************************************************************
@@ -1009,90 +968,16 @@
         this.keyword = "";
       },
   
-      //สร้างฟังก์ชั่นจัดรูปแบบวันที่
-      format_date(value) {
-        if (value) {
-          return moment(String(value)).format("DD/MM/YYYY");
-        }
-      },
-  
-      // สร้างฟังก์ชันแปลงยอดเงินให้เป็นรูปแบบสกุลเงิน (10,000.50)
-      formatPrice(value) {
-        let val = (value / 1).toFixed(2).replace(",", ",");
-        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      },
+ 
     },
   
-    validations() {
-      return {
-        categoryName: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        vendorName: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        brandName: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        siteName: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        locationName: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        departmentName: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        category_id: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        statusAsset: {
-          required: helpers.withMessage("Please input name", required),
-        },
-        tagIt: {
-          required: helpers.withMessage("Please input name", required),
-        },
-      };
-    },
-    //   imageData() {
-    //   return {
-    //     previewUrl: "",
-    //     updatePreview() {
-    //       var reader,
-    //         files = document.getElementById("thumbnail").files;
   
-    //       reader = new FileReader();
-  
-    //       reader.onload = e => {
-    //         this.previewUrl = e.target.result;
-    //       };
-  
-    //       reader.readAsDataURL(files[0]);
-    //     },
-    //     clearPreview() {
-    //       // document.getElementById("thumbnail").value = null;
-    //       // this.previewUrl = "";
-    //       this.imgUrl = "";
-    //     }
-    //   }
-    // },
-    clearPreview() {
-      // document.getElementById("thumbnail").value = null;
-      // this.previewUrl = "";
-      this.imgUrl = "";
-    },
   
     mounted() {
       this.currentPage = 1;
       // อ่านสินค้าจาก API
-      this.getAssets(this.currentPage);
-      // this.getAssets();
-      this.getCategorys();
-      this.getVendors();
-      this.getBrands();
-      this.getSites();
-      this.getLocations();
-      this.getDepartments();
+      this.getEmployees(this.currentPage);
+      
     },
   };
   </script>
