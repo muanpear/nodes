@@ -111,8 +111,8 @@
       </div>
   
       <div class="flex items-center justify-between my-8">
+        <router-link :to="'/add-employee'">
         <button
-          @click="openModalAddAsset"
           class="flex items-center justify-between px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-green-500 border border-transparent rounded-lg active:bg-purple-600 hover:bg-green-700 focus:outline-none focus:shadow-outline-purple"
         >
           <svg
@@ -130,6 +130,7 @@
           </svg>
           <span>เพิ่ม</span>
         </button>
+      </router-link>
       </div>
   
       <!-- table inventory -->
@@ -158,17 +159,23 @@
               >
                 <td class="px-4 py-3 text-sm">{{ employeeRow + 1 }}</td>
                 <td class="px-4 py-3 text-sm">
-                  <span
+                  <span v-if="employee.empStatus == 0"
                     class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-800"
-                    >OUT</span
+                    >Unactivated</span
+                  >
+                  <span v-if="employee.empStatus == 1"
+                    class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:green-red-800"
+                    >Activated</span
                   >
                 </td>
                 <td class="px-4 py-3">
                   <div class="flex items-center text-sm">
                     <div>
-                        <p class="font-semibold">
-                          {{ employee.empID }}
-                        </p>
+                        <router-link :to="'/employee/' + employee.id ">
+                      <p class="font-semibold">
+                        {{ employee.empID  }}
+                      </p></router-link
+                    >
                     </div>
                   </div>
                 </td>

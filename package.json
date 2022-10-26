@@ -23,6 +23,7 @@
     "vue-barcode-scanner": "^0.8.1",
     "vue-router": "^4.0.0-0",
     "vue-sweetalert2": "^5.0.2",
+    "vue3-html2pdf": "^1.1.2",
     "vuejs3-datepicker": "^1.0.7",
     "vuex": "^4.0.0-0"
   },

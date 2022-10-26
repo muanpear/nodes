@@ -23,8 +23,10 @@ import Equipments from '@/views/backend/Equipments.vue'
 import ShowAsset from '@/views/backend/asset/ShowAsset.vue'
 import EditAsset from '@/views/backend/asset/EditAsset.vue'
 import ListEmployee from '@/views/backend/employee/ListEmployee.vue'
+import AddEmployee from '@/views/backend/employee/AddEmployee.vue'
+import ShowEmployee from '@/views/backend/employee/ShowEmployee.vue'
 import GeneratePdf from '@/views/backend/checkout/GeneratePdf.vue'
-
+import PdfForm from '@/views/backend/checkout/PdfForm.vue'
 //สร้างฟังก์ชั่นเช็ค route ก่อนเรียกใช้งาน auth guard
 function authGuard(to, from, next) {
   let isAuthenticated = false
@@ -272,9 +274,57 @@ const routes = [
     component: BackendLayout,
     children: [
       {
+        path: 'add-employee',
+        name: 'AddEmployee',
+        component: AddEmployee,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'employee/:id',
+        name: 'ShowEmployee',
+        component: ShowEmployee,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
         path: 'pdfgen',
         name: 'GeneratePdf',
         component: GeneratePdf,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'pdfform',
+        name: 'PdfForm',
+        component: PdfForm,
         beforeEnter: authGuard
       }
     ],
