@@ -134,45 +134,60 @@
             <li class="py-3 sm:py-4">
               <div class="flex items-center space-x-4">
                 <div class="flex-shrink-0">
-                  <img
-                    class="w-8 h-8 rounded-full"
-                    src="/docs/images/people/profile-picture-1.jpg"
-                    alt="Neil image"
-                  />
+                  <svg class="w-6 h-6 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                  <p class="dark:text-gray-400">E-Mail</p>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p
-                    class="text-sm font-medium text-gray-900 truncate dark:text-white"
-                  >
-                    NB-TELECOM777
-                  </p>
                   <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                    245345345435
+                    User: Naichangyai
                   </p>
                 </div>
-       
+                <div class="flex-1 min-w-0">
+                  <button
+                    class="float-right px-1 py-1 mx-1 leading-5 text-white transition-colors duration-150 bg-yellow-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-yellow-700 focus:outline-none focus:shadow-outline-purple"
+                  >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  </button>
+                </div>
               </div>
             </li>
         
-            
+            <li class="py-3 sm:py-4">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                  <p>Printer</p>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                    User: Naichangyai
+                  </p>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <button
+                    class="float-right px-1 py-1 mx-1 leading-5 text-white transition-colors duration-150 bg-yellow-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-yellow-700 focus:outline-none focus:shadow-outline-purple"
+                  >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </li>
             
             <li class="pt-3 pb-0 sm:pt-4">
               <div class="flex items-center space-x-4">
                 <div class="flex-shrink-0">
-                  <img
-                    class="w-8 h-8 rounded-full"
-                    src="/docs/images/people/profile-picture-5.jpg"
-                    alt="Thomas image"
-                  />
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                  <p>Drive</p>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p
-                    class="text-sm font-medium text-gray-900 truncate dark:text-white"
-                  >
-                    PC-146
+                  <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                    192.168.200.98 | U: j.worasak P: WSlink2019
                   </p>
                   <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                    2465675765
+                    192.168.200.60 | U: j.worasak P: WSlink2019
+                  </p>
+                  <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                    192.168.196.8 | U: j.worasak P: WSlink2019
                   </p>
                 </div>
               </div>
