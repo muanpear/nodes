@@ -19,16 +19,16 @@
           class="block px-4 py-2 font-medium hover:text-indigo-900 lg:inline-block"
           >หน้าหลัก</router-link
         >
-        <router-link
+        <!-- <router-link
           to="/about"
           class="block px-4 py-2 font-medium hover:text-indigo-900 lg:inline-block"
           >เกี่ยวกับเรา</router-link
-        >
-        <router-link
+        > -->
+        <!-- <router-link
           to="/portfolio"
           class="block px-4 py-2 font-medium hover:text-indigo-900 lg:inline-block"
           >ผลงาน</router-link
-        >
+        > -->
         <router-link
           to="/service"
           class="block px-4 py-2 font-medium hover:text-indigo-900 lg:inline-block"
