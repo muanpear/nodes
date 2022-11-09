@@ -161,7 +161,6 @@
                   v-model="keyword"
                   class="w-full py-2 pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-200 border-0 rounded-md"
                   type="text"
-                  placeholder="ป้อนชื่อสินค้าที่ต้องการค้นหา"
                   aria-label="Search"
                 />
                 <button @click="submitSearchForm" type="submit" class="hidden">
@@ -265,7 +264,12 @@
               class="text-gray-700 dark:text-gray-400 hover:bg-blue-100"
             >
               <td class="px-4 py-3 text-sm">{{ assetRow + 1 }}</td>
-              <td class="px-4 py-3 text-sm">{{ asset.statusAsset }}</td>
+              <td class="px-4 py-3 text-sm">
+                <span
+                  class="bg-red-100 text-red-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-200 dark:text-red-800"
+                  >{{ asset.statusAsset }}</span
+                >
+              </td>
               <td class="px-4 py-3">
                 <div class="flex items-center text-sm">
                   <div
@@ -288,9 +292,9 @@
                         {{ asset.tagIt }}
                       </p></router-link
                     >
-                    
+
                     <p class="text-xs text-gray-600 dark:text-gray-400">
-                      Created {{ format_date(asset.created_at) }}
+                      - Created {{ format_date(asset.created_at) }}
                     </p>
                   </div>
                 </div>
@@ -327,23 +331,23 @@
               </td>
               <td class="px-4 py-3 text-sm">
                 <router-link :to="'/edit/' + asset.id">
-                <button
-                  class="px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-purple-600 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-purple"
-                >
-                  <svg
-                    class="w-3 h-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                  <button
+                    class="px-4 py-2 mx-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-yellow-400 border border-transparent rounded-lg active:bg-purple-600 hover:bg-yellow-500 focus:outline-none focus:shadow-outline-purple"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      class="w-3 h-3"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                      />
+                    </svg>
+                  </button>
                 </router-link>
 
                 <button
@@ -605,12 +609,13 @@
         </div>
       </div>
       <hr />
+
       <div class="flex flex-wrap">
         <div class="w-full px-3 pt-5">
           <label
             class="block mb-2 text-lg font-bold tracking-wide text-gray-700 dark:text-white"
           >
-            Detail
+            Purcharse
           </label>
         </div>
       </div>
@@ -690,6 +695,73 @@
             class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
             for="grid-state"
           >
+            PurcharseOrderID
+          </label>
+          <div class="relative">
+            <input
+              v-model="poID"
+              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+              id="grid-last-name"
+              type="text"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
+            Receive Date
+          </label>
+          <div class="relative">
+            <input
+              v-model="receiveDate"
+              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+              type="date"
+            />
+            <!-- <datepicker type="date" valueType="format" :format="'dd/MM/yyyy'" :value="purchaseDate"></datepicker> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap">
+        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
+            Cost
+          </label>
+          <div class="relative">
+            <input
+              v-model="cost"
+              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+              type="number"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      <div class="flex flex-wrap">
+        <div class="w-full px-3 pt-5">
+          <label
+            class="block mb-2 text-lg font-bold tracking-wide text-gray-700 dark:text-white"
+          >
+            Detail
+          </label>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap">
+        <div class="w-full px-3 pb-2 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
             Brand
           </label>
 
@@ -751,24 +823,6 @@
       </div>
 
       <div class="flex flex-wrap">
-        <div class="w-full px-3 pb-2 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Cost
-          </label>
-          <div class="relative">
-            <input
-              v-model="cost"
-              class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-              id="grid-last-name"
-              type="number"
-              autocomplete="off"
-            />
-          </div>
-        </div>
-
         <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
           <label
             class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
@@ -783,6 +837,22 @@
               id="grid-last-name"
               type="text"
               autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
+          <label
+            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
+            for="grid-state"
+          >
+            Warranty
+          </label>
+          <div class="relative">
+            <input
+              @change="checkWarrantyToggle($event)"
+              id="checkbox"
+              type="checkbox"
             />
           </div>
         </div>
@@ -801,21 +871,6 @@
               v-model="specification"
               class="block w-full px-4 py-1 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
               id="grid-last-name"
-            />
-          </div>
-        </div>
-        <div class="w-full px-3 mb-6 md:w-1/2 md:mb-0">
-          <label
-            class="block mb-2 text-xs font-bold tracking-wide text-gray-700 dark:text-white"
-            for="grid-state"
-          >
-            Warranty
-          </label>
-          <div class="relative">
-            <input
-              @change="checkWarrantyToggle($event)"
-              id="checkbox"
-              type="checkbox"
             />
           </div>
         </div>
@@ -1042,7 +1097,7 @@
         </div>
       </div>
       <div class="flex flex-wrap">
-        <div class="justify-center h-screen">
+        <div class="justify-center">
           <div class="flex justify-center">
             <input
               ref="fileupload"
@@ -1081,6 +1136,10 @@
           </div>
         </div>
       </div>
+      <hr />
+
+    
+      
     </form>
   </div>
 
@@ -1688,9 +1747,11 @@ export default {
       tagSap: "",
       vender_id: "",
       purchaseDate: "",
+      poID:"",
+      receiveDate:"",
+      cost: "",
       brand_id: "",
       model: "",
-      cost: "",
       serialNumber: "",
       specification: "",
       site_id: "",
@@ -1775,9 +1836,9 @@ export default {
     async getAssets(pageNumber) {
       let response = await http.get(`assets?page=${pageNumber}`);
       let responseAsset = response.data;
-    
+
       this.assets = responseAsset;
-       this.currentPage = responseAsset.current_page;
+      this.currentPage = responseAsset.current_page;
       this.perPage = responseAsset.per_page;
       this.total = responseAsset.total;
       console.log(this.assets);
@@ -2317,6 +2378,8 @@ export default {
         data.append("tagSap", this.tagSap);
         data.append("vender_id", this.vender_id);
         data.append("purchaseDate", this.purchaseDate);
+        data.append("poID", this.poID);
+        data.append("receiveDate", this.receiveDate);
         data.append("brand_id", this.brand_id);
         data.append("model", this.model);
         data.append("cost", this.cost);
@@ -2338,7 +2401,7 @@ export default {
             //reset form
             this.$refs.addAssetForm.reset();
             // this.vendorName = "";
-            // this.vendorDescription = "";
+            // this.vendorDescrption = "";
             // this.showAddVendorModal = false;
 
             // // reload
@@ -2491,7 +2554,7 @@ export default {
           this.total = responseProduct.total;
         });
       } else {
-        this.$swal.fire("ป้อนชื่อสินค้าที่ต้องการค้นหาก่อน");
+        this.$swal.fire("ใส่ก่อน");
       }
     },
 
@@ -2505,7 +2568,7 @@ export default {
     //สร้างฟังก์ชั่นจัดรูปแบบวันที่
     format_date(value) {
       if (value) {
-        return moment(String(value)).format("DD/MM/YYYY hh:mm");
+        return moment(String(value)).format("DD/MM/YYYY");
       }
     },
 
