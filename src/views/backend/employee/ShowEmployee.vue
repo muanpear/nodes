@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/require-v-for-key -->
 <template>
   <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
     <!-- SHOW{{ $route.params.id }} -->
@@ -128,6 +129,14 @@
           >
           System use
           </h5>
+          <button @click="openModalAddSystem"
+                    class="float-right px-1 py-1 mx-1 leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-purple"
+                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+</svg>
+
+                  </button>
         </div>
         <div class="flow-root">
           <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -198,13 +207,130 @@
       
     </div>
   </div>
+
+  <!-- Popup สำหรับเพิ่ม Add new System -->
+  <div
+    v-if="showAddSystemModal"
+    id="addSystemModal"
+    class="fixed top-0 left-0 flex items-center justify-center w-full h-full modal"
+  >
+    <div
+      class="absolute w-full h-full bg-gray-900 opacity-70 modal-overlay"
+    ></div>
+    <div
+      class="z-50 w-11/12 p-5 mx-auto overflow-y-auto bg-white rounded shadow-lg dark:bg-gray-800 modal-container md:max-w-md"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-center w-full h-auto">
+        <div
+          class="flex items-start justify-start w-full h-auto py-2 text-xl text-gray-700 dark:text-gray-200"
+        >
+          Add new system
+        </div>
+        <button
+          @click="closeModalAdd"
+          class="text-indigo-100 transition-colors duration-150 bg-red-500 focus:shadow-outline hover:bg-red-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="-2 -2 24 24"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+      <!-- Modal Content-->
+      <div class="w-full h-auto mb-4">
+        <form
+          ref="addSystemForm"
+          @submit.prevent="submitSystemForm"
+          enctype="multipart/form-data"
+        >
+          <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Type <font color="red">*</font></label
+          >
+          <select
+              v-model="category_id"
+              class="inline w-full px-2 py-1 pr-2 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+            >
+            <option value="null">Select</option>
+            <option v-for="type in types" :value="type.value">{{type.name}}</option>
+             
+             
+                
+              
+            </select>
+       
+
+          <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Name / Domain</label
+          >
+          <input
+            v-model="categoryCode"
+            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow"
+            type="text"
+          />
+
+          <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Username</label
+          >
+          <input
+            v-model="categoryCode"
+            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow"
+            type="text"
+          />
+
+          <label
+            class="block my-3 mb-2 text-xs text-gray-700 dark:text-white"
+            for="name"
+            >Password</label
+          >
+          <input
+            v-model="categoryCode"
+            class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow"
+            type="text"
+          />
+
+          <div class="flex flex-wrap float-right">
+            <div class="px-2">
+              <button
+                type="submit"
+                class="px-4 py-2 mt-4 font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg text-md active:bg-purple-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-purple"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>
+
+
 
 <script>
 import http from "@/services/BackendService";
 export default {
   data() {
     return {
+      types: [
+      { name: 'E-mail', value: 'email' },
+      { name: 'Printer', value: 'printer' },
+      { name: 'Drive', value: 'drive' },
+    ],
       employee: [],
       showParam: "",
 
@@ -214,8 +340,8 @@ export default {
       total: 0,
 
       // เปิด popup แสดงหน้าเพิ่มสินค้า
-      showAddModal: false,
-      showEditModal: false,
+      showAddSystemModal: false,
+    
 
       //ตัวแปรสำหรับผูกฟอร์มเพิ่มสินค้า
       name: "",
@@ -227,19 +353,25 @@ export default {
       imgUrl: "",
       file: null,
 
-      //ตัวแปรแก้ไขข้อมูลสินค้า
-      eid: "",
-      ename: "",
-      edescription: "",
-      eslug: "",
-      eprice: "",
-      eimgUrl: "",
+      
 
       //ตัวแปรค้นหาข้อมูล
       keyword: "",
     };
   },
   methods: {
+    openModalAddSystem() {
+      this.showAddSystemModal = true;
+      // this.showList = false;
+      // this.showAdd = true;
+    },
+
+    closeModalAdd() {
+      this.showAddSystemModal = false;
+
+      this.onResetForm();
+    },
+
     async getEmployee(id) {
       let response = await http.get(`employee/${id}`);
       let responseEmployee = response.data;

@@ -25,6 +25,7 @@ import EditAsset from '@/views/backend/asset/EditAsset.vue'
 import ListEmployee from '@/views/backend/employee/ListEmployee.vue'
 import AddEmployee from '@/views/backend/employee/AddEmployee.vue'
 import ShowEmployee from '@/views/backend/employee/ShowEmployee.vue'
+import CheckoutForm from '@/views/backend/checkout/CheckoutForm.vue'
 import GeneratePdf from '@/views/backend/checkout/GeneratePdf.vue'
 import PdfForm from '@/views/backend/checkout/PdfForm.vue'
 //สร้างฟังก์ชั่นเช็ค route ก่อนเรียกใช้งาน auth guard
@@ -293,6 +294,21 @@ const routes = [
         path: 'employee/:id',
         name: 'ShowEmployee',
         component: ShowEmployee,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'checkout',
+        name: 'CheckoutForm',
+        component: CheckoutForm,
         beforeEnter: authGuard
       }
     ],
