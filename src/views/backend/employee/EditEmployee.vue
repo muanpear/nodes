@@ -10,7 +10,7 @@
             <div
               class="flex items-start justify-start w-full h-auto py-2 text-xl font-bold text-gray-700 dark:text-gray-200"
             >
-              Add Employee
+              Edit Employee
             </div>
   
             <button

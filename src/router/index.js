@@ -24,6 +24,7 @@ import ShowAsset from '@/views/backend/asset/ShowAsset.vue'
 import EditAsset from '@/views/backend/asset/EditAsset.vue'
 import ListEmployee from '@/views/backend/employee/ListEmployee.vue'
 import AddEmployee from '@/views/backend/employee/AddEmployee.vue'
+import EditEmployee from '@/views/backend/employee/EditEmployee.vue'
 import ShowEmployee from '@/views/backend/employee/ShowEmployee.vue'
 import CheckoutForm from '@/views/backend/checkout/CheckoutForm.vue'
 import GeneratePdf from '@/views/backend/checkout/GeneratePdf.vue'
@@ -278,6 +279,22 @@ const routes = [
         path: 'add-employee',
         name: 'AddEmployee',
         component: AddEmployee,
+        beforeEnter: authGuard
+      }
+    ],
+    meta:{
+      title: 'Asset'
+    }
+  },
+  {
+    path: '/',
+    // name: 'Products',
+    component: BackendLayout,
+    children: [
+      {
+        path: 'edit-employee/:id',
+        name: 'EditEmployee',
+        component: EditEmployee,
         beforeEnter: authGuard
       }
     ],
